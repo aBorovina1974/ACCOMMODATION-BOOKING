@@ -1,0 +1,69 @@
+.container {
+  min-width: 80%;
+  margin-bottom: 2rem;
+
+  .main-content {
+    width: 100%;
+    display: flex;
+
+    .info {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 1rem;
+      border: 1px solid red;
+
+      .expand {
+        align-self: flex-end;
+      }
+
+      h2 {
+        text-align: left;
+        font-size: 1.5rem;
+      }
+    }
+  }
+
+  .details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 1rem;
+    border: 1px solid blue;
+
+    .amenities {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .book {
+      width: 100%;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .price {
+        background-color: #f9f9f9;
+        padding: 0.5rem 0;
+      }
+    }
+
+    h2 {
+      margin-bottom: 0;
+    }
+
+    h3 {
+      margin: 0;
+    }
+  }
+
+  h2,
+  h3 {
+    margin-top: 0;
+  }
+}
