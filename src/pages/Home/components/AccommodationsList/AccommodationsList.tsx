@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import AccommodationItem, {
   AccommodationData,
 } from "../AccomodationItem/AccomodationItem";
@@ -31,27 +31,25 @@ export default function AccommodationList() {
     return isWithinRange;
   };
 
-  if (
-    (filterState.startDate && filterState.endDate) ||
-    filterState.selectedCapacity ||
-    filterState.selectedAmenity
-  ) {
-    const filtered: AccommodationData[] = accommodations.filter((acc) =>
-      acc.availableDates.filter((range) => {
-        isDateRangeWithinRange(
-          {
-            startDate: filterState.startDate?.toISOString(),
-            endDate: filterState.endDate?.toISOString(),
-          },
-          new Date(range.intervalStart).toISOString(),
-          new Date(range.intervalEnd).toISOString()
-        );
-      })
-    );
-    setFilteredAccommodations(filtered);
-  }
-
   let content: ReactNode;
+
+  useEffect(() => {
+    if (filterState.startDate && filterState.endDate && accommodations) {
+      const filtered: AccommodationData[] = accommodations.filter((acc) =>
+        acc.availableDates.some((range) =>
+          isDateRangeWithinRange(
+            {
+              startDate: filterState.startDate?.toISOString(),
+              endDate: filterState.endDate?.toISOString(),
+            },
+            new Date(range.intervalStart).toISOString(),
+            new Date(range.intervalEnd).toISOString()
+          )
+        )
+      );
+      setFilteredAccommodations(filtered);
+    }
+  }, [filterState, accommodations]);
 
   if (isFetching) {
     content = <h1>Fetching....</h1>;
