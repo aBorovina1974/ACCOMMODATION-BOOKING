@@ -24,9 +24,10 @@ export default function AccommodationList() {
     availableEndDate: string
   ): boolean => {
     const { startDate, endDate } = dateRange;
-    const isWithinRange: boolean = false;
+    let isWithinRange: boolean = false;
     if (startDate && endDate) {
-      startDate >= availableStartDate && endDate <= availableEndDate;
+      isWithinRange =
+        startDate >= availableStartDate && endDate <= availableEndDate;
     }
     return isWithinRange;
   };
@@ -55,25 +56,25 @@ export default function AccommodationList() {
     content = <h1>Fetching....</h1>;
   }
 
-  if (filteredAccommodations ? filteredAccommodations : accommodations) {
-    content = (
-      <ul className={styles.accommodations}>
-        {accommodations?.map((acc) => (
-          <AccommodationItem
-            key={crypto.randomUUID()}
-            id={acc.id}
-            title={acc.title}
-            image={acc.image}
-            capacity={acc.capacity}
-            beachDistanceInMeters={acc.beachDistanceInMeters}
-            amenities={acc.amenities}
-            pricelistInEuros={acc.pricelistInEuros}
-            availableDates={acc.availableDates}
-          />
-        ))}
-      </ul>
-    );
-  }
-
+  content = (
+    <ul className={styles.accommodations}>
+      {(filteredAccommodations?.length
+        ? filteredAccommodations
+        : accommodations
+      )?.map((acc) => (
+        <AccommodationItem
+          key={crypto.randomUUID()}
+          id={acc.id}
+          title={acc.title}
+          image={acc.image}
+          capacity={acc.capacity}
+          beachDistanceInMeters={acc.beachDistanceInMeters}
+          amenities={acc.amenities}
+          pricelistInEuros={acc.pricelistInEuros}
+          availableDates={acc.availableDates}
+        />
+      ))}
+    </ul>
+  );
   return <>{content}</>;
 }
