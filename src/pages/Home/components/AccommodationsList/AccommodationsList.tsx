@@ -36,7 +36,6 @@ export default function AccommodationList() {
     filterState.selectedCapacity ||
     filterState.selectedAmenity
   ) {
-    console.log("Aktivirano je");
     const filtered: AccommodationData[] = accommodations.filter((acc) =>
       acc.availableDates.filter((range) => {
         isDateRangeWithinRange(
@@ -44,8 +43,8 @@ export default function AccommodationList() {
             startDate: filterState.startDate?.toISOString(),
             endDate: filterState.endDate?.toISOString(),
           },
-          range.intervalStart.toISOString(),
-          range.intervalEnd.toISOString()
+          new Date(range.intervalStart).toISOString(),
+          new Date(range.intervalEnd).toISOString()
         );
       })
     );

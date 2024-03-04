@@ -36,14 +36,12 @@ export type AccommodationData = {
 };
 
 export default function AccommodationItem({
-  id,
   title,
   image,
   capacity,
   beachDistanceInMeters,
   amenities,
   pricelistInEuros,
-  availableDates,
 }: AccommodationData) {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const { filterState } = useFilterContext();
