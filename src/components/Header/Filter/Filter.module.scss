@@ -1,0 +1,14 @@
+.container {
+  width: 300px;
+  position: absolute;
+  top: 5.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 1rem;
+  border: 1px solid rgb(180, 179, 179);
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgb(180, 179, 179);
+  background-color: rgba(180, 179, 179, 0.5);
+}

@@ -1,5 +1,11 @@
+import AccommodationList from "./components/AccommodationsList/AccommodationsList";
+
 const Home = () => {
-  return <></>;
+  return (
+    <>
+      <AccommodationList />
+    </>
+  );
 };
 
 export default Home;

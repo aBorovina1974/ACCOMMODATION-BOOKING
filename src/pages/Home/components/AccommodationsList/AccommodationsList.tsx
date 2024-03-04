@@ -1,42 +1,67 @@
-import { ReactNode, useEffect, useState } from "react";
-import { get } from "../../../../utils/http";
-import AccommodationItem from "../AccomodationItem/AccomodationItem";
-import { AccommodationData } from "../AccomodationItem/AccomodationItem";
+import { ReactNode, useState } from "react";
+import AccommodationItem, {
+  AccommodationData,
+} from "../AccomodationItem/AccomodationItem";
+import styles from "./AccommodationsList.module.scss";
+import { useAccommodationsContext } from "../../../../contexts/accommodations-context";
+import { useFilterContext } from "../../../../contexts/filter-context";
+
+type DateRange = {
+  startDate: string | undefined;
+  endDate: string | undefined;
+};
 
 export default function AccommodationList() {
-  const [fetchedAccommodations, setFetchedAccomodations] =
-    useState<AccommodationData[]>();
-  const [isFetchcing, setIsFetching] = useState(false);
-  const [error, setError] = useState<string>();
+  const { accommodations, isFetching } = useAccommodationsContext();
+  const { filterState } = useFilterContext();
+  const [filteredAccommodations, setFilteredAccommodations] = useState<
+    AccommodationData[] | null
+  >(null);
 
-  useEffect(() => {
-    async function fetchAccommodations() {
-      setIsFetching(true);
-      try {
-        const data = await get<AccommodationData[]>(
-          "https://api.adriatic.hr/test/accommodation"
-        );
-        setFetchedAccomodations(data);
-      } catch (error) {
-        if (error instanceof Error) {
-          setError(error.message);
-        }
-      }
-      setIsFetching(false);
+  const isDateRangeWithinRange = (
+    dateRange: DateRange,
+    availableStartDate: string,
+    availableEndDate: string
+  ): boolean => {
+    const { startDate, endDate } = dateRange;
+    const isWithinRange: boolean = false;
+    if (startDate && endDate) {
+      startDate >= availableStartDate && endDate <= availableEndDate;
     }
-    fetchAccommodations();
-  }, []);
+    return isWithinRange;
+  };
+
+  if (
+    (filterState.startDate && filterState.endDate) ||
+    filterState.selectedCapacity ||
+    filterState.selectedAmenity
+  ) {
+    console.log("Aktivirano je");
+    const filtered: AccommodationData[] = accommodations.filter((acc) =>
+      acc.availableDates.filter((range) => {
+        isDateRangeWithinRange(
+          {
+            startDate: filterState.startDate?.toISOString(),
+            endDate: filterState.endDate?.toISOString(),
+          },
+          range.intervalStart.toISOString(),
+          range.intervalEnd.toISOString()
+        );
+      })
+    );
+    setFilteredAccommodations(filtered);
+  }
 
   let content: ReactNode;
 
-  if (isFetchcing) {
+  if (isFetching) {
     content = <h1>Fetching....</h1>;
   }
 
-  if (fetchedAccommodations) {
+  if (filteredAccommodations ? filteredAccommodations : accommodations) {
     content = (
-      <ul>
-        {fetchedAccommodations?.map((acc) => (
+      <ul className={styles.accommodations}>
+        {accommodations?.map((acc) => (
           <AccommodationItem
             key={crypto.randomUUID()}
             id={acc.id}

@@ -1,5 +1,8 @@
 import styles from "./AccommodationItem.module.scss";
-import { findMinMax, splitCamelCase } from "../../../../utils/utils";
+import { findMinMax } from "../../../../utils/utils";
+import { AMENITIES_LIST } from "../../../../utils/store";
+import { useState } from "react";
+import { useFilterContext } from "../../../../contexts/filter-context";
 
 type Amenities = {
   airConditioning: boolean;
@@ -42,9 +45,16 @@ export default function AccommodationItem({
   pricelistInEuros,
   availableDates,
 }: AccommodationData) {
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const { filterState } = useFilterContext();
+
   const priceRange = findMinMax(
     pricelistInEuros.map((priceObj) => priceObj.pricePerNight)
   );
+
+  const detailsToggleHandler = () => {
+    setIsDetailsOpen((prev) => !prev);
+  };
   return (
     <div className={styles.container}>
       <div className={styles["main-content"]}>
@@ -54,36 +64,47 @@ export default function AccommodationItem({
           <h3>Number of rooms: {capacity}</h3>
           <h3>Distance from the beach: {beachDistanceInMeters} m</h3>
           <div className={styles.expand}>
-            <button>View Details</button>
+            <button onClick={detailsToggleHandler}>
+              {!isDetailsOpen ? "View Details" : "Close"}
+            </button>
           </div>
         </div>
       </div>
-      <div className={styles.details}>
-        <h2>Additional amenities:</h2>
-        <ul className={styles.amenities}>
-          {amenities &&
-            Object.entries(amenities)
-              .filter((amenity) => amenity[1])
-              .map((amenity) => (
-                <li key={crypto.randomUUID()}>
-                  <h3>{splitCamelCase(amenity[0])}</h3>
-                </li>
-              ))}
-        </ul>
-        <div className={styles.book}>
-          <div className={styles.price}>
+      {isDetailsOpen && (
+        <div className={styles.details}>
+          <div className={styles.amenities}>
+            <h2>Additional amenities:</h2>
+            <ul className={styles.amenities}>
+              {amenities &&
+                Object.entries(amenities)
+                  .filter((amenity) => amenity[1])
+                  .map((_, index) => (
+                    <li key={crypto.randomUUID()}>
+                      <h3>{AMENITIES_LIST[index]}</h3>
+                    </li>
+                  ))}
+            </ul>
+          </div>
+          <div className={styles.book}>
             {/* <h3>Price:</h3> */}
             <h3>
               Price range:
               {`${priceRange.min}€ - ${priceRange.max}€`}
             </h3>
+            {filterState.startDate && filterState.endDate && (
+              <button>Book Now</button>
+            )}
           </div>
-          <h3>
-            Please select dates in order to see the price and make a reservation
-          </h3>
-          <button>Book Now</button>
+          {(!filterState.startDate || !filterState.endDate) && (
+            <div className={styles.message}>
+              <h3>
+                Please select dates in order to see the price and make a
+                reservation
+              </h3>
+            </div>
+          )}
         </div>
-      </div>
+      )}
     </div>
   );
 }
